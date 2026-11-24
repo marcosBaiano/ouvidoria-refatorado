@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Ouvidoria Web</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, var(--gray-900) 0%, var(--gray-800) 100%);
+            color: var(--gray-700);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                padding: 25px;
+            }
+            header h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--gray-700);
+            font-size: 0.95rem;
+        }
+
+        .required {
+            color: var(--danger);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="date"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            font-weight: 500;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .envolvidos-container {
+            background: var(--gray-50);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .envolvido-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid var(--gray-200);
+        }
+
+        @media (max-width: 768px) {
+            .envolvido-item {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn-remover {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-remover:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-adicionar {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-adicionar:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .upload-area {
+            border: 2px dashed var(--gray-300);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--gray-50);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .upload-area.drag {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .upload-area input[type="file"] {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .arquivos-lista {
+            margin-top: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .arquivo-item {
+            background: var(--gray-50);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .info-box {
+            background: rgba(37, 99, 235, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            color: var(--gray-700);
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--primary-dark);
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: var(--gray-200);
+            color: var(--gray-600);
+            border-radius: 50%;
+            line-height: 40px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step.active .step-number {
+            background: var(--primary);
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background: var(--success);
+            color: white;
+        }
+
+        .step-label {
+            margin-top: 8px;
+            font-weight: 600;
+            color: var(--gray-600);
+            font-size: 0.9rem;
+        }
+
+        .step.active .step-label {
+            color: var(--primary);
+        }
+
+        .step-line {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            right: -50%;
+            height: 2px;
+            background: var(--gray-200);
+            z-index: 1;
+        }
+
+        .step.completed .step-line {
+            background: var(--success);
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        button[type="submit"],
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button[type="submit"] {
+            background: var(--primary);
+            color: white;
+        }
+
+        button[type="submit"]:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        button[type="submit"]:disabled {
+            background: var(--gray-300);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-300);
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            border-left: 4px solid var(--success);
+            color: #065f46;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            border-left: 4px solid var(--danger);
+            color: #7f1d1d;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            border-left: 4px solid var(--warning);
+            color: #78350f;
+        }
+
+        .alert.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .success-message h2 {
+            font-size: 1.8rem;
+            color: var(--gray-800);
+            margin-bottom: 10px;
+        }
+
+        .success-message .protocolo {
+            background: var(--gray-100);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .terms-checkbox {
+            background: var(--gray-50);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .error-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .error-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .error-list li:last-child {
+            border-bottom: none;
+        }
+
+        .impacto-checkboxes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .impacto-checkboxes {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚖️ Sistema de Ouvidoria</h1>
+            <p>Reporte denúncias de forma segura e anônima</p>
+        </header>
+
+        <div class="card">
+            <div id="alertContainer"></div>
+
+            <!-- Indicador de Etapas -->
+            <div class="step-indicator">
+                <div class="step active">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Informações</div>
+                    <div class="step-line"></div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Detalhes</div>
+                    <div class="step-line"></div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Evidências</div>
+                    <div class="step-line"></div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Confirmação</div>
+                </div>
+            </div>
+
+            <form id="denunciaForm">
+                <!-- ETAPA 1: INFORMAÇÕES BÁSICAS -->
+                <div class="form-section active" data-step="1">
+                    <h2>Etapa 1: Informações Básicas</h2>
+
+                    <div class="info-box">
+                        <strong>✓ Segurança</strong>
+                        Todas as informações são criptografadas e armazenadas com segurança
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Tipo de Denúncia <span class="required">*</span></label>
+                            <select name="tipo" required>
+                                <option value="">-- Selecione --</option>
+                                <option value="assedio_moral">Assédio Moral</option>
+                                <option value="assedio_sexual">Assédio Sexual</option>
+                                <option value="discriminacao">Discriminação</option>
+                                <option value="fraude">Fraude</option>
+                                <option value="conflito_interesse">Conflito de Interesse</option>
+                                <option value="conduta_inadequada">Conduta Inadequada</option>
+                                <option value="furto">Furto</option>
+                                <option value="etica">Questão Ética</option>
+                                <option value="outro">Outro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Local da Denúncia <span class="required">*</span></label>
+                            <select name="local" required>
+                                <option value="">-- Selecione --</option>
+                                <option value="producao">Produção</option>
+                                <option value="expedicao">Expedição</option>
+                                <option value="logistica">Logística</option>
+                                <option value="administrativo">Administrativo</option>
+                                <option value="externo">Externo</option>
+                                <option value="outro">Outro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Data/Período do Ocorrido</label>
+                        <input type="text" name="data_periodo" placeholder="Ex: 01/03/2026 ou Últimas 2 semanas">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descrição Detalhada <span class="required">*</span></label>
+                        <textarea name="descricao" placeholder="Descreva os fatos de forma clara e detalhada..." required></textarea>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="anonimato" name="anonimato" value="1" checked>
+                        <label for="anonimato">Desejo manter sigilo de minha identidade (Recomendado)</label>
+                    </div>
+                </div>
+
+                <!-- ETAPA 2: DETALHES -->
+                <div class="form-section" data-step="2">
+                    <h2>Etapa 2: Detalhes da Denúncia</h2>
+
+                    <div class="info-box">
+                        <strong>Informações sobre os envolvidos</strong>
+                        Adicione dados sobre as pessoas envolvidas na denúncia
+                    </div>
+
+                    <div class="envolvidos-container">
+                        <h3 style="margin-bottom: 15px; color: var(--gray-700);">Pessoas Envolvidas</h3>
+                        <div id="envolvidosList"></div>
+                        <button type="button" class="btn-adicionar" onclick="adicionarEnvolvido()">+ Adicionar Pessoa</button>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 25px;">
+                        <label>Testemunhas</label>
+                        <textarea name="testemunhas" placeholder="Nome ou descrição das testemunhas (opcional)"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>A denúncia foi comunicada a alguém?</label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="comunicado" name="comunicado" value="1">
+                            <label for="comunicado">Sim, foi comunicada</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="quemComunicadoGroup" style="display: none;">
+                        <label>A quem foi comunicada?</label>
+                        <input type="text" name="quem_comunicou" placeholder="Nome ou cargo da pessoa">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Impactos Relacionados</label>
+                        <div class="impacto-checkboxes">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" name="impacto" value="seguranca" id="imp-seguranca">
+                                <label for="imp-seguranca" style="margin: 0;">Segurança</label>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" name="impacto" value="saude" id="imp-saude">
+                                <label for="imp-saude" style="margin: 0;">Saúde</label>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" name="impacto" value="financeiro" id="imp-financeiro">
+                                <label for="imp-financeiro" style="margin: 0;">Financeiro</label>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" name="impacto" value="reputacao" id="imp-reputacao">
+                                <label for="imp-reputacao" style="margin: 0;">Reputação</label>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" name="impacto" value="ambiental" id="imp-ambiental">
+                                <label for="imp-ambiental" style="margin: 0;">Ambiental</label>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" name="impacto" value="recursos_humanos" id="imp-rh">
+                                <label for="imp-rh" style="margin: 0;">Recursos Humanos</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ETAPA 3: EVIDÊNCIAS -->
+                <div class="form-section" data-step="3">
+                    <h2>Etapa 3: Evidências (Opcional)</h2>
+
+                    <div class="info-box">
+                        <strong>Arquivos aceitos:</strong>
+                        Imagens (JPG, PNG), Documentos (PDF, DOC), Vídeos (MP4)
+                        <br><strong>Tamanho máximo:</strong> 50MB por arquivo
+                    </div>
+
+                    <div class="form-group">
+                        <label>Envie Evidências</label>
+                        <div class="upload-area" id="uploadArea" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+                            <div class="upload-icon">📎</div>
+                            <p><strong>Arraste arquivos aqui</strong> ou clique para selecionar</p>
+                            <p style="font-size: 0.85rem; color: var(--gray-500); margin-top: 8px;">Máximo 50MB por arquivo</p>
+                            <input type="file" id="fileInput" name="evidencias" multiple onchange="handleFileSelect(event)">
+                        </div>
+                    </div>
+
+                    <div id="arquivosList" class="arquivos-lista"></div>
+                </div>
+
+                <!-- ETAPA 4: CONFIRMAÇÃO -->
+                <div class="form-section" data-step="4">
+                    <h2>Etapa 4: Revisão e Confirmação</h2>
+
+                    <div id="revisor" style="background: var(--gray-50); padding: 20px; border-radius: 8px; margin-bottom: 20px;"></div>
+
+                    <div class="terms-checkbox">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="terms" name="terms" required>
+                            <label for="terms">
+                                Declaro que as informações fornecidas são verdadeiras e assumo responsabilidade por denúncias falsas
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="terms-checkbox">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="politica" name="politica" required>
+                            <label for="politica">
+                                Aceito a política de não retaliação e privacidade do sistema
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOTÕES -->
+                <div class="buttons">
+                    <button type="button" class="btn btn-secondary" id="btnAnterior" onclick="mudarEtapa(-1)" style="display: none;">← Anterior</button>
+                    <button type="button" class="btn btn-secondary" id="btnProximo" onclick="mudarEtapa(1)">Próximo →</button>
+                    <button type="submit" id="btnEnviar" style="display: none;">✓ Enviar Denúncia</button>
+                </div>
+            </form>
+
+            <!-- MENSAGEM DE SUCESSO -->
+            <div id="sucessoDiv" style="display: none;">
+                <div class="success-message">
+                    <div class="success-icon">✅</div>
+                    <h2>Denúncia Registrada com Sucesso!</h2>
+                    <p style="color: var(--gray-600); margin: 15px 0;">Agradecemos por sua contribuição para uma empresa mais ética e transparente.</p>
+                    <div class="protocolo" id="protocoloDiv"></div>
+                    <p style="color: var(--gray-600); margin-top: 20px;">Guarde este número para acompanhar o status de sua denúncia.</p>
+                    <button type="button" class="btn" style="margin-top: 20px; max-width: 300px; margin-left: auto; margin-right: auto;" onclick="window.location.reload()">Nova Denúncia</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let etapaAtual = 1;
+        let arquivosAdicionados = [];
+        let envolvidosAdicionados = [];
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            atualizarBotoes();
+            document.getElementById('comunicado').addEventListener('change', function() {
+                document.getElementById('quemComunicadoGroup').style.display = this.checked ? 'block' : 'none';
+            });
+        });
+
+        // Enviar formulário
+        document.getElementById('denunciaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            enviarDenuncia();
+        });
+
+        function mudarEtapa(direcao) {
+            const totalEtapas = 4;
+            const novaEtapa = etapaAtual + direcao;
+
+            if (novaEtapa < 1 || novaEtapa > totalEtapas) return;
+
+            if (direcao === 1 && !validarEtapaAtual()) {
+                return;
+            }
+
+            if (novaEtapa === 4 && direcao === 1) {
+                gerarRevisao();
+            }
+
+            etapaAtual = novaEtapa;
+            mostrarEtapa();
+            atualizarBotoes();
+            atualizarIndicador();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function mostrarEtapa() {
+            document.querySelectorAll('.form-section').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelector(`[data-step="${etapaAtual}"]`).classList.add('active');
+        }
+
+        function atualizarBotoes() {
+            const btnAnterior = document.getElementById('btnAnterior');
+            const btnProximo = document.getElementById('btnProximo');
+            const btnEnviar = document.getElementById('btnEnviar');
+
+            btnAnterior.style.display = etapaAtual === 1 ? 'none' : 'flex';
+            btnProximo.style.display = etapaAtual === 4 ? 'none' : 'flex';
+            btnEnviar.style.display = etapaAtual === 4 ? 'flex' : 'none';
+        }
+
+        function atualizarIndicador() {
+            document.querySelectorAll('.step').forEach((step, index) => {
+                const stepNum = index + 1;
+                step.classList.remove('active', 'completed');
+                if (stepNum === etapaAtual) {
+                    step.classList.add('active');
+                } else if (stepNum < etapaAtual) {
+                    step.classList.add('completed');
+                }
+            });
+        }
+
+        function validarEtapaAtual() {
+            const form = document.getElementById('denunciaForm');
+            const campos = form.querySelectorAll(`[data-step="${etapaAtual}"] [required]`);
+            let valido = true;
+
+            campos.forEach(campo => {
+                if (!campo.value.trim()) {
+                    mostrarErro(`${campo.name} é obrigatório`);
+                    valido = false;
+                }
+            });
+
+            return valido;
+        }
+
+        function adicionarEnvolvido() {
+            const id = Date.now();
+            const html = `
+                <div class="envolvido-item" id="envolvido-${id}">
+                    <input type="text" placeholder="Nome completo" class="envolvido-nome" value="">
+                    <input type="text" placeholder="Cargo/Posição" class="envolvido-cargo" value="">
+                    <input type="text" placeholder="Setor/Departamento" class="envolvido-setor" value="">
+                    <button type="button" class="btn-remover" onclick="removerEnvolvido(${id})">Remover</button>
+                </div>
+            `;
+            document.getElementById('envolvidosList').insertAdjacentHTML('beforeend', html);
+            envolvidosAdicionados.push(id);
+        }
+
+        function removerEnvolvido(id) {
+            document.getElementById(`envolvido-${id}`).remove();
+            envolvidosAdicionados = envolvidosAdicionados.filter(e => e !== id);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            document.getElementById('uploadArea').classList.add('drag');
+        }
+
+        function handleDragLeave(e) {
+            document.getElementById('uploadArea').classList.remove('drag');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            document.getElementById('uploadArea').classList.remove('drag');
+            const files = e.dataTransfer.files;
+            adicionarArquivos(files);
+        }
+
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            adicionarArquivos(files);
+        }
+
+        function adicionarArquivos(files) {
+            for (let file of files) {
+                if (file.size > 52428800) {
+                    mostrarErro(`Arquivo ${file.name} excede 50MB`);
+                    continue;
+                }
+
+                const ext = file.name.split('.').pop().toLowerCase();
+                if (!['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'mp4', 'avi'].includes(ext)) {
+                    mostrarErro(`Tipo de arquivo não permitido: ${ext}`);
+                    continue;
+                }
+
+                arquivosAdicionados.push(file);
+            }
+            atualizarListaArquivos();
+        }
+
+        function atualizarListaArquivos() {
+            const lista = document.getElementById('arquivosList');
+            lista.innerHTML = '';
+            arquivosAdicionados.forEach((arquivo, index) => {
+                const html = `
+                    <div class="arquivo-item">
+                        <span>📄 ${arquivo.name}</span>
+                        <button type="button" onclick="removerArquivo(${index})" style="background: var(--danger); color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">×</button>
+                    </div>
+                `;
+                lista.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function removerArquivo(index) {
+            arquivosAdicionados.splice(index, 1);
+            atualizarListaArquivos();
+        }
+
+        function gerarRevisao() {
+            const form = document.getElementById('denunciaForm');
+            const formData = new FormData(form);
+
+            const tipo = formData.get('tipo');
+            const local = formData.get('local');
+            const descricao = formData.get('descricao');
+            const anonimato = formData.get('anonimato') === '1';
+
+            // Coletar envolvidos
+            const envolvidos = [];
+            document.querySelectorAll('.envolvido-item').forEach(item => {
+                const nome = item.querySelector('.envolvido-nome').value;
+                const cargo = item.querySelector('.envolvido-cargo').value;
+                const setor = item.querySelector('.envolvido-setor').value;
+                if (nome) {
+                    envolvidos.push({ nome, cargo, setor });
+                }
+            });
+
+            // Coletar impactos
+            const impactos = [];
+            document.querySelectorAll('input[name="impacto"]:checked').forEach(cb => {
+                impactos.push(cb.value);
+            });
+
+            const revisao = `
+                <div style="background: white; padding: 20px; border-radius: 8px;">
+                    <h3 style="margin-bottom: 15px; color: var(--gray-800);">Resumo da Denúncia</h3>
+                    <dl style="display: grid; grid-template-columns: 200px 1fr; gap: 15px;">
+                        <dt style="font-weight: bold; color: var(--gray-600);">Tipo:</dt>
+                        <dd style="color: var(--gray-800);">${this.getTipoLabel(tipo)}</dd>
+
+                        <dt style="font-weight: bold; color: var(--gray-600);">Local:</dt>
+                        <dd style="color: var(--gray-800);">${this.getLocalLabel(local)}</dd>
+
+                        <dt style="font-weight: bold; color: var(--gray-600);">Anonimato:</dt>
+                        <dd style="color: var(--gray-800);">${anonimato ? '✓ Anônima' : '✗ Identificada'}</dd>
+
+                        <dt style="font-weight: bold; color: var(--gray-600);">Descrição:</dt>
+                        <dd style="color: var(--gray-800); padding: 10px; background: var(--gray-50); border-radius: 6px; grid-column: 1/-1;">${descricao.substring(0, 200)}...</dd>
+
+                        ${envolvidos.length > 0 ? `
+                            <dt style="font-weight: bold; color: var(--gray-600);">Envolvidos:</dt>
+                            <dd style="color: var(--gray-800); grid-column: 1/-1;">${envolvidos.length} pessoa(s) adicionada(s)</dd>
+                        ` : ''}
+
+                        ${impactos.length > 0 ? `
+                            <dt style="font-weight: bold; color: var(--gray-600);">Impactos:</dt>
+                            <dd style="color: var(--gray-800);">${impactos.join(', ')}</dd>
+                        ` : ''}
+
+                        <dt style="font-weight: bold; color: var(--gray-600);">Arquivos:</dt>
+                        <dd style="color: var(--gray-800);">${arquivosAdicionados.length} arquivo(s)</dd>
+                    </dl>
+                </div>
+            `;
+
+            document.getElementById('revisor').innerHTML = revisao;
+        }
+
+        getTipoLabel(tipo) {
+            const tipos = {
+                'assedio_moral': 'Assédio Moral',
+                'assedio_sexual': 'Assédio Sexual',
+                'discriminacao': 'Discriminação',
+                'fraude': 'Fraude',
+                'conflito_interesse': 'Conflito de Interesse',
+                'conduta_inadequada': 'Conduta Inadequada',
+                'furto': 'Furto',
+                'etica': 'Questão Ética',
+                'outro': 'Outro'
+            };
+            return tipos[tipo] || tipo;
+        }
+
+        getLocalLabel(local) {
+            const locais = {
+                'producao': 'Produção',
+                'expedicao': 'Expedição',
+                'logistica': 'Logística',
+                'administrativo': 'Administrativo',
+                'externo': 'Externo',
+                'outro': 'Outro'
+            };
+            return locais[local] || local;
+        }
+
+        function enviarDenuncia() {
+            const btnEnviar = document.getElementById('btnEnviar');
+            btnEnviar.disabled = true;
+            btnEnviar.innerHTML = '<span class="loading"></span> Enviando...';
+
+            const form = document.getElementById('denunciaForm');
+            const formData = new FormData(form);
+
+            // Coletar envolvidos
+            const envolvidos = [];
+            document.querySelectorAll('.envolvido-item').forEach(item => {
+                const nome = item.querySelector('.envolvido-nome').value;
+                const cargo = item.querySelector('.envolvido-cargo').value;
+                const setor = item.querySelector('.envolvido-setor').value;
+                if (nome) {
+                    envolvidos.push({ nome, cargo, setor });
+                }
+            });
+
+            // Coletar impactos
+            const impactos = [];
+            document.querySelectorAll('input[name="impacto"]:checked').forEach(cb => {
+                impactos.push(cb.value);
+            });
+
+            const payload = {
+                tipo: formData.get('tipo'),
+                descricao: formData.get('descricao'),
+                local: formData.get('local'),
+                data_periodo: formData.get('data_periodo'),
+                testemunhas: formData.get('testemunhas'),
+                comunicado: formData.get('comunicado') === '1',
+                quem_comunicou: formData.get('quem_comunicou'),
+                anonimato: formData.get('anonimato') === '1',
+                contato: formData.get('contato'),
+                envolvidos: envolvidos,
+                impacto: impactos
+            };
+
+            fetch('/api/denuncias', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                btnEnviar.disabled = false;
+                btnEnviar.innerHTML = '✓ Enviar Denúncia';
+
+                if (data.success) {
+                    document.getElementById('denunciaForm').style.display = 'none';
+                    document.getElementById('sucessoDiv').style.display = 'block';
+                    document.getElementById('protocoloDiv').textContent = `Protocolo: ${data.data.protocolo}`;
+
+                    // Upload de arquivos se houver
+                    if (arquivosAdicionados.length > 0) {
+                        enviarArquivos(data.data.id);
+                    }
+                } else {
+                    mostrarErro(data.message || 'Erro ao enviar denúncia');
+                }
+            })
+            .catch(error => {
+                btnEnviar.disabled = false;
+                btnEnviar.innerHTML = '✓ Enviar Denúncia';
+                mostrarErro('Erro ao enviar denúncia: ' + error.message);
+                console.error(error);
+            });
+        }
+
+        function enviarArquivos(idDenuncia) {
+            arquivosAdicionados.forEach(arquivo => {
+                const formData = new FormData();
+                formData.append('arquivo', arquivo);
+
+                fetch(`/api/denuncias/${idDenuncia}/evidencias`, {
+                    method: 'POST',
+                    body: formData
+                });
+            });
+        }
+
+        function mostrarErro(mensagem) {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-error show';
+            alert.innerHTML = `<strong>Erro:</strong> ${mensagem}`;
+            container.appendChild(alert);
+
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 300);
+            }, 5000);
+        }
+
+        function mostrarSucesso(mensagem) {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-success show';
+            alert.innerHTML = `<strong>Sucesso:</strong> ${mensagem}`;
+            container.appendChild(alert);
+
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 300);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
